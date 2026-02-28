@@ -10,8 +10,8 @@ Daily curated tech articles and trends collected from:
 
 - Hatena Bookmark (IT / Programming / AI / Security / Engineer categories)
 - Hacker News
-- Reddit (security-focused subreddits)
-- Security blogs (aikido.dev, wiz.io)
+- Reddit (13 subreddits: security, AI, core tech, OSS/indie dev, crypto)
+- Feedly OPML subscriptions (44 feeds across Devops, Hacker, News categories)
 
 Each entry is tagged and annotated with a personal interest rating based on
 [mkontani's interest profile](./mkontani-interests.md).
@@ -32,6 +32,7 @@ Each entry is tagged and annotated with a personal interest rating based on
 │       ├── deploy.yml      # Build and publish to GitHub Pages on push to main
 │       └── lint.yml        # Markdown lint + shellcheck + Hugo build check on PR
 ├── hugo.toml               # Hugo site configuration
+├── feedly-opml-*.opml      # Feedly OPML export (RSS feed subscriptions)
 ├── mkontani-interests.md   # Auto-generated interest profile (used for curation)
 └── AGENTS.md               # Guidelines for agentic coding agents
 ```
@@ -74,6 +75,18 @@ markdownlint-cli2 content/posts/daily/20260228-trend.md
 3. Cross-reference against `mkontani-interests.md` for interest ratings (★★★ / ★★ / ★).
 4. Run lint and verify with `hugo server -D`.
 5. Commit: `content(posts): add YYYY-MM-DD trend report`.
+
+## Updating Feedly OPML
+
+The Feedly OPML file (`feedly-opml-*.opml`) contains RSS feed subscriptions
+used by the daily trend collection skill. When you add, remove, or change
+subscriptions in Feedly, update the local file:
+
+1. Open <https://feedly.com/i/opml> in a browser (login required).
+2. Export (download) the OPML file.
+3. Replace the existing `feedly-opml-*.opml` file in the repository root with
+   the downloaded file.
+4. Commit: `chore(feeds): update Feedly OPML export`.
 
 ## CI/CD
 
