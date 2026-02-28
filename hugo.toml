@@ -1,0 +1,45 @@
+baseURL = "https://mkontani.github.io/tech-trends/"
+languageCode = "ja"
+title = "tech-trends"
+paginate = 20
+
+[module]
+  [[module.imports]]
+    path = "github.com/adityatelange/hugo-PaperMod"
+
+[params]
+  description = "mkontani's daily tech trend curation"
+  author = "mkontani"
+  ShowReadingTime = true
+  ShowShareButtons = false
+  ShowPostNavLinks = true
+  ShowBreadCrumbs = true
+  ShowCodeCopyButtons = true
+  defaultTheme = "auto"
+
+[params.homeInfoParams]
+  Title = "tech-trends"
+  Content = "mkontaniが日々収集したテック系トレンドネタのキュレーションサイト"
+
+[[params.socialIcons]]
+  name = "github"
+  url = "https://github.com/mkontani"
+
+[menu]
+  [[menu.main]]
+    identifier = "posts"
+    name = "記事一覧"
+    url = "/posts/"
+    weight = 10
+  [[menu.main]]
+    identifier = "tags"
+    name = "タグ"
+    url = "/tags/"
+    weight = 20
+
+[taxonomies]
+  tag = "tags"
+
+[markup.highlight]
+  style = "monokai"
+  lineNos = false
