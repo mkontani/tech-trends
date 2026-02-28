@@ -8,95 +8,183 @@ description: "Daily tech trend collection customized for mkontani"
 Collect trending articles from Hatena Bookmark IT, Hacker News, Reddit, and security
 blogs, then save results to `content/posts/daily/YYYYMMDD-trend.md`.
 
+## CRITICAL: Token Budget Strategy
+
+This skill fetches many sources. To stay within the model's context window, follow
+these rules strictly:
+
+1. **Always use the Task tool (subagent) for data collection.** Never fetch URLs
+   directly from the main conversation. Launch subagents that fetch, extract, and
+   return **only structured summary data** (title, URL, metrics). Raw HTML must
+   never reach the main context.
+2. **Use Bash + curl + jq/sed** instead of WebFetch wherever possible. Pipe fetched
+   content through `jq` or `sed` to extract only the needed fields before the
+   output is returned.
+3. **Limit list sizes.** Keep only the top items per source as specified below.
+
+---
+
 ## Steps
 
 ### 0. Load user profile
 
 Read `mkontani-interests.md` to understand mkontani's technical interest areas.
 
-### 1. Collect trend data
+### 1. Collect trend data (use Task tool subagents)
 
-Fetch the latest trending content from the following sources:
+Launch **three Task-tool subagents in parallel** for the three source groups below.
+Each subagent must return **only a compact structured text list** — never raw HTML.
 
-**Japanese market (Hatena Bookmark IT)**
+---
 
-- https://b.hatena.ne.jp/hotentry/it
-- https://b.hatena.ne.jp/hotentry/it/%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0
-- https://b.hatena.ne.jp/hotentry/it/AI%E3%83%BB%E6%A9%9F%E6%A2%B0%E5%AD%A6%E7%BF%92
-- https://b.hatena.ne.jp/hotentry/it/%E3%81%AF%E3%81%A6%E3%81%AA%E3%83%96%E3%83%AD%E3%82%B0%EF%BC%88%E3%83%86%E3%82%AF%E3%83%8E%E3%83%AD%E3%82%B8%E3%83%BC%EF%BC%89
-- https://b.hatena.ne.jp/hotentry/it/%E3%82%BB%E3%82%AD%E3%83%A5%E3%83%AA%E3%83%86%E3%82%A3%E6%8A%80%E8%A1%93
-- https://b.hatena.ne.jp/hotentry/it/%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2
-- Extract **title, original article URL, and bookmark count** for each entry
-- Use the original article URL, not the Hatena Bookmark entry page URL
+#### Subagent A: Hatena Bookmark IT (Japanese market)
 
-**Global (Hacker News)**
+Prompt the subagent with:
 
-- https://news.ycombinator.com/
-- Extract **title, HN comment page URL (`https://news.ycombinator.com/item?id=XXXXX`), and points** for each story
-- **Use the HN comment page URL, not the original article URL** (so comments are accessible)
-- **Translate titles to English** (they are usually already in English; normalize if not)
+> Fetch the Hatena Bookmark IT RSS feed and extract trending articles.
+>
+> Use the Bash tool to run:
+>
+> ```bash
+> curl -s 'https://b.hatena.ne.jp/hotentry/it.rss' | \
+>   python3 -c "
+> import sys, xml.etree.ElementTree as ET
+> tree = ET.parse(sys.stdin)
+> ns = {'rdf':'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+>        'rss':'http://purl.org/rss/1.0/',
+>        'dc':'http://purl.org/dc/elements/1.1/',
+>        'hatena':'http://www.hatena.ne.jp/info/xmlns#'}
+> items = tree.findall('.//rss:item', ns)[:30]
+> for i, item in enumerate(items, 1):
+>     title = item.find('rss:title', ns)
+>     link = item.find('rss:link', ns)
+>     count = item.find('hatena:bookmarkcount', ns)
+>     t = title.text if title is not None else 'N/A'
+>     l = link.text if link is not None else 'N/A'
+>     c = count.text if count is not None else '0'
+>     print(f'{i}. [{t}]({l}) ({c} users)')
+> "
+> ```
+>
+> If the python3 approach fails, fall back to:
+>
+> ```bash
+> curl -s 'https://b.hatena.ne.jp/hotentry/it.rss' | \
+>   grep -oP '(?<=<item rdf:about=").*?(?=")' | head -30
+> ```
+>
+> and then extract titles and bookmark counts similarly.
+>
+> Return ONLY the numbered list in this exact format — nothing else:
+>
+> ```
+> 1. [Title](URL) (XXX users)
+> 2. [Title](URL) (XXX users)
+> ...
+> ```
+>
+> Maximum 30 entries. No commentary, no raw HTML.
 
-**Security (additional sources)**
+---
 
-- https://www.aikido.dev/blog — security for developer-focused audiences
-- https://www.wiz.io/blog — cloud security
-- Check the latest 1–3 articles; include any with interest rating ★★★ in notable topics
+#### Subagent B: Hacker News (global)
 
-**Reddit (13 subreddits)**
+Prompt the subagent with:
 
-- **Important**: WebFetch is blocked for reddit.com — use the **Bash tool with curl**
-- Fetch top 10 posts per subreddit via `/hot.json?t=day&limit=10`
-- Use **old.reddit.com** (not www.reddit.com)
-- Set User-Agent header: `"User-Agent: tech-trend-collector/1.0 (trend analysis tool)"`
-- Extract **title, full Reddit comment page URL, upvotes (ups), and comment count**
-- **Translate titles to English**
+> Fetch the top 30 Hacker News stories using their API.
+>
+> Use the Bash tool to run:
+>
+> ```bash
+> ids=$(curl -s 'https://hacker-news.firebaseio.com/v0/topstories.json' | jq '.[0:30] | .[]')
+> for id in $ids; do
+>   curl -s "https://hacker-news.firebaseio.com/v0/item/${id}.json" | \
+>     jq -r '"[\(.title)](https://news.ycombinator.com/item?id=\(.id)) (\(.score)pt)"'
+> done
+> ```
+>
+> Return ONLY the numbered list in this exact format — nothing else:
+>
+> ```
+> 1. [Title](https://news.ycombinator.com/item?id=XXXXX) (XXXpt)
+> 2. [Title](https://news.ycombinator.com/item?id=XXXXX) (XXXpt)
+> ...
+> ```
+>
+> Maximum 30 entries. No commentary, no raw HTML.
 
-Example curl command (run via Bash tool):
+---
 
-```bash
-curl -s -H "User-Agent: tech-trend-collector/1.0 (trend analysis tool)" \
-  "https://old.reddit.com/r/programming/hot.json?t=day&limit=10" | \
-  jq -r '.data.children[] | "\(.data.title)|\(.data.ups)|\(.data.num_comments)|https://www.reddit.com\(.data.permalink)"'
-```
+#### Subagent C: Reddit (13 subreddits)
 
-Data fields:
+Prompt the subagent with:
 
-- `data.children[].data.title`: title
-- `data.children[].data.ups`: upvotes
-- `data.children[].data.num_comments`: comment count
-- `data.children[].data.permalink`: path (prepend `https://www.reddit.com` for full URL)
+> Fetch top posts from 13 Reddit subreddits using curl + jq.
+>
+> **Important**: Use old.reddit.com with the JSON API. Fetch 5 posts per subreddit.
+> Add a 1-second delay between requests to respect rate limits.
+>
+> Subreddits grouped by category:
+>
+> - Security: netsec, cybersecurity
+> - AI: OpenAI, LocalLLaMA, ClaudeCode
+> - Core tech: programming, technology
+> - OSS / indie dev: opensource, indiehackers, webdev
+> - Crypto: CryptoCurrency, CryptoTechnology, defi
+>
+> For each subreddit, run:
+>
+> ```bash
+> curl -s -H "User-Agent: tech-trend-collector/1.0 (trend analysis tool)" \
+>   "https://old.reddit.com/r/SUBREDDIT/hot.json?t=day&limit=5" | \
+>   jq -r '.data.children[] | "[\(.data.title)]( https://www.reddit.com\(.data.permalink)) (\(.data.ups) ups, \(.data.num_comments) comments)"'
+> ```
+>
+> Return ONLY a categorized list in this exact format — nothing else:
+>
+> ```
+> ### Security
+> r/netsec:
+> 1. [Title](URL) (XXX ups, XXX comments)
+> ...
+> r/cybersecurity:
+> 1. [Title](URL) (XXX ups, XXX comments)
+> ...
+>
+> ### AI
+> r/OpenAI:
+> ...
+>
+> ### Core tech
+> ...
+>
+> ### OSS / Indie Dev
+> ...
+>
+> ### Crypto
+> ...
+> ```
+>
+> No commentary, no raw JSON, no HTML.
 
-Security (2 subreddits):
+---
 
-- r/netsec
-- r/cybersecurity
+#### Security blogs (inline — small payload)
 
-AI (3 subreddits):
+After the three subagents return, optionally check these security blogs:
 
-- r/OpenAI
-- r/LocalLLaMA
-- r/ClaudeCode
+- https://www.aikido.dev/blog
+- https://www.wiz.io/blog
 
-Core tech (2 subreddits):
+Use WebFetch with `format: text` and extract only the latest 1-3 article titles
+and URLs. Include any with interest rating three-star in notable topics. If this would
+add too much context, skip these sources.
 
-- r/programming
-- r/technology
-
-OSS / indie dev (3 subreddits):
-
-- r/opensource
-- r/indiehackers
-- r/webdev
-
-Crypto (3 subreddits):
-
-- r/CryptoCurrency
-- r/CryptoTechnology
-- r/defi
+---
 
 ### 2. Analyze
 
-Analyze collected content from the following angles:
+Analyze the collected structured data from the following angles:
 
 **Interest-area matching (highest priority)**
 
@@ -206,12 +294,13 @@ Use the following format:
 
 ## Notes
 
-- Use the WebFetch tool to retrieve content
+- **Use Task tool subagents for all data collection** to keep raw content out of main context
+- Use Bash + curl + jq instead of WebFetch for structured APIs (HN, Reddit)
 - **Every article must include a URL link — no link-less entries**
 - **Hatena Bookmark: always extract the original article URL**, not the Hatena entry page URL
 - **Hacker News: use the HN comment page URL (`item?id=` format)**, not the original article URL
 - **Reddit: use the full Reddit comment page URL (`https://www.reddit.com/r/subreddit/comments/...`)**
-- **All titles must be in English**
+- **All titles must be in English** (translate Japanese titles)
 - Be mindful of Reddit API rate limits (approximately 60 requests per minute)
 - Prioritize articles with high upvotes / comment counts / bookmark counts
 - Use the actual execution date for YYYYMMDD in the output filename
