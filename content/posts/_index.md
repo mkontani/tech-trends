@@ -1,5 +1,5 @@
 ---
-title: "記事一覧"
+title: "Posts"
 layout: "archives"
 url: "/posts/"
 summary: "posts"

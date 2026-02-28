@@ -1,5 +1,5 @@
 baseURL = "https://mkontani.github.io/tech-trends/"
-languageCode = "ja"
+languageCode = "en"
 title = "tech-trends"
 paginate = 20
 
@@ -19,7 +19,7 @@ paginate = 20
 
 [params.homeInfoParams]
   Title = "tech-trends"
-  Content = "mkontaniが日々収集したテック系トレンドネタのキュレーションサイト"
+  Content = "mkontani's daily curated tech trends and articles"
 
 [[params.socialIcons]]
   name = "github"
@@ -28,12 +28,12 @@ paginate = 20
 [menu]
   [[menu.main]]
     identifier = "posts"
-    name = "記事一覧"
+    name = "Posts"
     url = "/posts/"
     weight = 10
   [[menu.main]]
     identifier = "tags"
-    name = "タグ"
+    name = "Tags"
     url = "/tags/"
     weight = 20
 

@@ -13,11 +13,11 @@ comprehension; bottleneck is now natural-language formulation, not writing code.
 
 **Signals from blog:**
 
-- "claudeやばい" (2026-02-17) — Claude Sonnet used for all dev; GPT found frustrating;
+- "Claude is insane" (2026-02-17) — Claude Sonnet used for all dev; GPT found frustrating;
   discusses future where thought maps directly to code
-- "ITエンジニア＝レビューやさん" (2026-01-26) — AI completes coding tasks instantly;
+- "IT engineers = reviewers" (2026-01-26) — AI completes coding tasks instantly;
   engineer role reduced to review; questions how review skills will develop in AI-first era
-- "openAI API 試す" (2026-02-05) — Tried OpenAI vision API for image recognition in an
+- "Trying the OpenAI API" (2026-02-05) — Tried OpenAI vision API for image recognition in an
   app; notes REST API is becoming natural-language-only
 
 **Relevance for curation:** Surface articles on LLM coding tools, Claude/OpenAI API
@@ -52,11 +52,11 @@ as a future career path.
 
 **Signals from blog:**
 
-- "ブロックチェーン" (2026-02-03) — Listened to blockchain engineering podcast; notes
+- "Blockchain" (2026-02-03) — Listened to blockchain engineering podcast; notes
   EVM/Solana/Sui importance; stablecoins growing, NFTs shrinking
 - "x402" (2026-02-10) — Stablecoins + AI agents driving x402 adoption; stocks being
   tokenized; autonomous value transfer as future direction
-- "てんしょく" (2026-01-29) — Interested in Web3/DAO work styles; sees it as
+- "Job change" (2026-01-29) — Interested in Web3/DAO work styles; sees it as
   inevitable shift away from single-employer model
 
 **Relevance for curation:** Surface articles on EVM ecosystem, Solana/Sui development,
@@ -73,7 +73,7 @@ contributions.
 
 **Signals from blog:**
 
-- "OSSサーフィン" (2026-02-15) — Resumed keyword-based OSS discovery; found useful
+- "OSS surfing" (2026-02-15) — Resumed keyword-based OSS discovery; found useful
   tools missed via recommendations; notes AI making OSS look polished but rough inside;
   questions what engineering skill means in AI era
 
@@ -90,11 +90,11 @@ MVP-first with zero infrastructure cost.
 
 **Signals from blog:**
 
-- "うらしまたろう" (2026-01-27) — Adopted BaaS for personal project; epiphany that
+- "Urashima Taro" (2026-01-27) — Adopted BaaS for personal project; epiphany that
   backend = authorized storage + policy; frontend is where human effort belongs; MVP
   deployable for free on static hosts
-- "スカイツリー" (2026-02-23) — Used "チャッピー" (likely Claude) for idea brainstorming;
-  "とりあえずMVPはよ作ろう" mindset
+- "Skytree" (2026-02-23) — Used an AI assistant (likely Claude) for idea brainstorming;
+  "let's just build the MVP" mindset
 
 **Relevance for curation:** Surface articles on BaaS platforms, static site tooling,
 indie hacker success stories, Netlify/Vercel/GitHub Pages updates, and MVP strategy.
@@ -124,10 +124,10 @@ job-market strategy.
 
 **Signals from blog:**
 
-- "てんしょく" (2026-01-29) — Read "転職2.0"; identifies lack of network as fatal
+- "Job change" (2026-01-29) — Read "Job Change 2.0"; identifies lack of network as fatal
   weakness; notes affiliate income declining due to AI; open to loose multi-company
   connections
-- "きぎょうか" (2026-02-25) — Read USEN Uno biography; reflects on timing and
+- "Entrepreneurship" (2026-02-25) — Read USEN Uno biography; reflects on timing and
   relationships in entrepreneurship
 
 **Relevance for curation:** Surface articles on remote work, foreign-company hiring,

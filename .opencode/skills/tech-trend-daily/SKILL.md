@@ -1,23 +1,24 @@
 ---
 name: tech-trend-daily
-description: "mkontaniカスタマイズしたトレンドネタ収集"
+description: "Daily tech trend collection customized for mkontani"
 ---
 
-# トレンドネタ収集
+# Daily Trend Collection
 
-はてなブックマークIT人気エントリーとHacker Newsの人気記事を収集し、`content/posts/daily/YYYYMMDD-trend.md` に保存する。
+Collect trending articles from Hatena Bookmark IT, Hacker News, Reddit, and security
+blogs, then save results to `content/posts/daily/YYYYMMDD-trend.md`.
 
-## 実行手順
+## Steps
 
-### 0. ユーザープロファイル読み込み
+### 0. Load user profile
 
-`mkontani-interests.md` を読み込み、mkontaniの技術興味領域を理解する：
+Read `mkontani-interests.md` to understand mkontani's technical interest areas.
 
-### 1. トレンド情報の収集
+### 1. Collect trend data
 
-以下のサイトから最新のトレンド情報を取得：
+Fetch the latest trending content from the following sources:
 
-**日本市場（はてブIT）**
+**Japanese market (Hatena Bookmark IT)**
 
 - https://b.hatena.ne.jp/hotentry/it
 - https://b.hatena.ne.jp/hotentry/it/%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0
@@ -25,194 +26,192 @@ description: "mkontaniカスタマイズしたトレンドネタ収集"
 - https://b.hatena.ne.jp/hotentry/it/%E3%81%AF%E3%81%A6%E3%81%AA%E3%83%96%E3%83%AD%E3%82%B0%EF%BC%88%E3%83%86%E3%82%AF%E3%83%8E%E3%83%AD%E3%82%B8%E3%83%BC%EF%BC%89
 - https://b.hatena.ne.jp/hotentry/it/%E3%82%BB%E3%82%AD%E3%83%A5%E3%83%AA%E3%83%86%E3%82%A3%E6%8A%80%E8%A1%93
 - https://b.hatena.ne.jp/hotentry/it/%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2
-- 各エントリーの**タイトル、元記事URL、ブックマーク数**を必ず取得すること
-- はてブのエントリーページURLではなく、リンク先の元記事URLを抽出
+- Extract **title, original article URL, and bookmark count** for each entry
+- Use the original article URL, not the Hatena Bookmark entry page URL
 
-**グローバル（Hacker News）**
+**Global (Hacker News)**
 
 - https://news.ycombinator.com/
-- 各記事の**タイトル、HNコメントページURL（`https://news.ycombinator.com/item?id=XXXXX`形式）、ポイント数**を取得
-- **元記事URLではなくHNのコメントページURLを使用すること**（コメントも確認できるようにするため）
-- **タイトルは日本語に翻訳して出力**
+- Extract **title, HN comment page URL (`https://news.ycombinator.com/item?id=XXXXX`), and points** for each story
+- **Use the HN comment page URL, not the original article URL** (so comments are accessible)
+- **Translate titles to English** (they are usually already in English; normalize if not)
 
-**セキュリティ（追加ソース）**
+**Security (additional sources)**
 
-- https://www.aikido.dev/blog - セキュリティ研究開発者向けのセキュリティ情報
-- https://www.wiz.io/blog - クラウドセキュリティ
-- 最新1-3記事をチェックし、興味度★★★のものがあれば注目トピックに含める
+- https://www.aikido.dev/blog — security for developer-focused audiences
+- https://www.wiz.io/blog — cloud security
+- Check the latest 1–3 articles; include any with interest rating ★★★ in notable topics
 
-**Reddit（13サブレッド）**
+**Reddit (13 subreddits)**
 
-- **重要**: WebFetchツールはreddit.comをブロックするため、**Bashツールでcurlコマンドを使用**すること
-- 各サブレッドから `/hot.json?t=day&limit=10` で上位10件を取得
-- **old.reddit.com**を使用（www.reddit.comではない）
-- User-Agentヘッダーを設定: `"User-Agent: neta-trend-collector/1.0 (trend analysis tool)"`
-- 各記事の**タイトル、Redditコメントページの完全URL、投票数（ups）、コメント数**を取得
-- **タイトルは日本語に翻訳して出力**
+- **Important**: WebFetch is blocked for reddit.com — use the **Bash tool with curl**
+- Fetch top 10 posts per subreddit via `/hot.json?t=day&limit=10`
+- Use **old.reddit.com** (not www.reddit.com)
+- Set User-Agent header: `"User-Agent: tech-trend-collector/1.0 (trend analysis tool)"`
+- Extract **title, full Reddit comment page URL, upvotes (ups), and comment count**
+- **Translate titles to English**
 
-取得例（Bashツールで実行）:
+Example curl command (run via Bash tool):
 
 ```bash
-curl -s -H "User-Agent: neta-trend-collector/1.0 (trend analysis tool)" \
+curl -s -H "User-Agent: tech-trend-collector/1.0 (trend analysis tool)" \
   "https://old.reddit.com/r/programming/hot.json?t=day&limit=10" | \
   jq -r '.data.children[] | "\(.data.title)|\(.data.ups)|\(.data.num_comments)|https://www.reddit.com\(.data.permalink)"'
 ```
 
-データ構造:
+Data fields:
 
-- `data.children[].data.title`: タイトル
-- `data.children[].data.ups`: 投票数
-- `data.children[].data.num_comments`: コメント数
-- `data.children[].data.permalink`: パス（`https://www.reddit.com` + permalink で完全URL）
+- `data.children[].data.title`: title
+- `data.children[].data.ups`: upvotes
+- `data.children[].data.num_comments`: comment count
+- `data.children[].data.permalink`: path (prepend `https://www.reddit.com` for full URL)
 
-セキュリティ系（2サブレッド）:
+Security (2 subreddits):
 
 - r/netsec
 - r/cybersecurity
 
-AI系（3サブレッド）:
+AI (3 subreddits):
 
 - r/OpenAI
 - r/LocalLLaMA
 - r/ClaudeCode
 
-コア技術系（2サブレッド）:
+Core tech (2 subreddits):
 
 - r/programming
 - r/technology
 
-OSS/個人開発系（3サブレッド）:
+OSS / indie dev (3 subreddits):
 
 - r/opensource
 - r/indiehackers
 - r/webdev
 
-Crypto系（3サブレッド）:
+Crypto (3 subreddits):
 
 - r/CryptoCurrency
 - r/CryptoTechnology
 - r/defi
 
-### 2. 分析
+### 2. Analyze
 
-収集した情報を以下の観点で分析：
+Analyze collected content from the following angles:
 
-**興味領域マッチング（最優先）**
+**Interest-area matching (highest priority)**
 
-- 各記事を興味領域と照合し、関連度を評価
-- 高関連度の記事を「注目トピック」の最上位に配置
-- 特に注目すべきトピック：
-  - AI関連（開発ツール、セキュリティ、倫理）
-  - セキュリティ関連（脆弱性、攻撃手法、防御策）
-  - OSS/個人開発関連（成功事例、マーケティング、収益化）
-  - キャリア関連（外資転職、リモートワーク、副業）
-  - JavaScript/TypeScript関連（新技術、ツール、フレームワーク）
+- Cross-reference each article against interest areas in `mkontani-interests.md`
+- Place high-relevance articles at the top of "Notable Topics"
+- Topics to prioritize:
+  - AI (dev tools, security, ethics)
+  - Security (vulnerabilities, attack techniques, defenses)
+  - OSS / indie dev (success stories, marketing, monetization)
+  - Career (foreign-company hiring, remote work, side projects)
+  - JavaScript / TypeScript (new tech, tools, frameworks)
 
-**はてブIT**
+**Hatena Bookmark IT**
 
-- 日本のエンジニアに刺さりやすい話題
-- 議論を呼びそうなトピック
-- 技術トレンド（AI、開発手法、ツール等）
-- キャリア・働き方関連
+- Topics resonating with Japanese engineers
+- Potentially controversial topics
+- Tech trends (AI, dev practices, tooling)
+- Career and work-style topics
 
 **Hacker News**
 
-- グローバルで話題の技術トレンド
-- スタートアップ・プロダクト関連
-- セキュリティ関連（脆弱性、攻撃手法、インシデント）
-- 議論を呼んでいるトピック（ポイント数が高い）
+- Globally trending tech topics
+- Startup and product news
+- Security (vulnerabilities, attacks, incidents)
+- High-engagement discussions (high point count)
 
-**Reddit（13サブレッド）**
+**Reddit (13 subreddits)**
 
-- セキュリティ系：最新の脅威、実践的な攻撃・防御手法
-- AI系：OpenAI、ローカルLLM、Claude Code関連
-- OSS/個人開発系：OSSプロジェクト、個人開発、Web開発
-- Crypto系：暗号通貨、ブロックチェーン、DeFi
-- 投票数（ups）とコメント数でコミュニティの反応を評価
-- 議論が活発なトピック（コメント数が多い）を優先
+- Security: latest threats, practical attack/defense techniques
+- AI: OpenAI, local LLMs, Claude Code
+- OSS / indie dev: OSS projects, personal projects, web dev
+- Crypto: cryptocurrency, blockchain, DeFi
+- Prioritize by upvote count and comment count (community signal)
+- Favor actively debated topics (high comment count)
 
-### 3. 出力
+### 3. Output
 
-**まず「ネタ収集完了。」というメッセージを返してから、結果を `content/posts/daily/YYYYMMDD-trend.md` に保存。**
+**Return "Collection complete." first, then save results to `content/posts/daily/YYYYMMDD-trend.md`.**
 
-以下のフォーマットで出力：
+Use the following format:
 
 ```markdown
-# トレンドネタ: YYYY-MM-DD
+# Trend Report: YYYY-MM-DD
 
-## はてブIT（日本市場）
+## Hatena Bookmark IT (Japanese market)
 
-### 注目トピック
+### Notable Topics
 
-| タイトル              | ブクマ数  | 興味度   | カテゴリ           | メモ                     |
-| --------------------- | --------- | -------- | ------------------ | ------------------------ |
-| [タイトル](元記事URL) | XXX users | ★★★/★★/★ | AI/開発/キャリア等 | 発信に活用できるポイント |
+| Title                         | Bookmarks | Interest | Category           | Notes                              |
+| ----------------------------- | --------- | -------- | ------------------ | ---------------------------------- |
+| [Title](original article URL) | XXX users | ★★★/★★/★ | AI/Dev/Career/etc. | Points useful for content creation |
 
-**興味度の定義**:
+**Interest rating definition**:
 
-- ★★★: 興味領域に直接関連（AI×セキュリティ、OSS、個人開発、キャリアなど）
-- ★★: 間接的に関連（技術トレンド全般、エンジニアリング文化）
-- ★: 一般的なIT/技術ニュース
+- ★★★: Directly related to interest areas (AI x security, OSS, indie dev, career, etc.)
+- ★★: Indirectly related (general tech trends, engineering culture)
+- ★: General IT/tech news
 
-### 全エントリー
+### All Entries
 
-1. [タイトル](元記事URL) (XXX users) - 概要
+1. [Title](original article URL) (XXX users) — summary
 2. ...
 
-## Hacker News（グローバル）
+## Hacker News (global)
 
-### 注目トピック
+### Notable Topics
 
-| タイトル                        | ポイント | 興味度   | カテゴリ          | メモ                     |
-| ------------------------------- | -------- | -------- | ----------------- | ------------------------ |
-| [タイトル](HNコメントページURL) | XXXpt    | ★★★/★★/★ | AI/Security/Dev等 | 発信に活用できるポイント |
+| Title                        | Points | Interest | Category             | Notes                              |
+| ---------------------------- | ------ | -------- | -------------------- | ---------------------------------- |
+| [Title](HN comment page URL) | XXXpt  | ★★★/★★/★ | AI/Security/Dev/etc. | Points useful for content creation |
 
-### 全エントリー
+### All Entries
 
-1. [タイトル](HNコメントページURL) (XXXpt) - 概要
+1. [Title](HN comment page URL) (XXXpt) — summary
 2. ...
 
-## Reddit（13サブレッド）
+## Reddit (13 subreddits)
 
-### 注目トピック
+### Notable Topics
 
-| タイトル                                | 投票数  | コメント数 | 興味度   | カテゴリ          | サブレッド  | メモ                     |
-| --------------------------------------- | ------- | ---------- | -------- | ----------------- | ----------- | ------------------------ |
-| [タイトル](Redditコメントページ完全URL) | XXX ups | XXX        | ★★★/★★/★ | Security/AI/OSS等 | r/subreddit | 発信に活用できるポイント |
+| Title                                 | Upvotes | Comments | Interest | Category             | Subreddit   | Notes                              |
+| ------------------------------------- | ------- | -------- | -------- | -------------------- | ----------- | ---------------------------------- |
+| [Title](full Reddit comment page URL) | XXX ups | XXX      | ★★★/★★/★ | Security/AI/OSS/etc. | r/subreddit | Points useful for content creation |
 
-### カテゴリ別エントリー
+### Entries by Category
 
-#### セキュリティ系
+#### Security
 
-1. [タイトル](RedditコメントページURL) (XXX ups, XXX comments) - r/netsec - 概要
+1. [Title](Reddit comment page URL) (XXX ups, XXX comments) — r/netsec — summary
 2. ...
 
-#### AI系
+#### AI
 
-1. [タイトル](RedditコメントページURL) (XXX ups, XXX comments) - r/OpenAI - 概要
+1. [Title](Reddit comment page URL) (XXX ups, XXX comments) — r/OpenAI — summary
 2. ...
 
-#### OSS/個人開発系
+#### OSS / Indie Dev
 
-1. [タイトル](RedditコメントページURL) (XXX ups, XXX comments) - r/opensource - 概要
+1. [Title](Reddit comment page URL) (XXX ups, XXX comments) — r/opensource — summary
 2. ...
 
-#### Crypto系
+#### Crypto
 
-1. [タイトル](RedditコメントページURL) (XXX ups, XXX comments) - r/CryptoCurrency - 概要
+1. [Title](Reddit comment page URL) (XXX ups, XXX comments) — r/CryptoCurrency — summary
 2. ...
 ```
 
-## 注意事項
+## Notes
 
-- WebFetchツールを使用して情報を取得
-- **すべての記事にURLリンクを必ず含める（リンクなしは不可）**
-- **はてブは元記事のURLを必ず取得**（はてブページURLではなく）
-- **Hacker NewsはHNコメントページURL（`item?id=`形式）を使用**（元記事URLではなく）
-- **Hacker Newsのタイトルは日本語に翻訳**
-- **RedditはRedditコメントページの完全URL（`https://www.reddit.com/r/subreddit/comments/...`形式）を使用**
-- **Redditのタイトルは日本語に翻訳**
-- Reddit APIレート制限に注意（1分あたり60リクエスト程度）
-- 投票数（ups）/コメント数が高い記事を優先
-- ポイント数/ブックマーク数が高い記事は特に注目
-- 出力ファイルのYYYYMMDDは実行日の日付を使用
+- Use the WebFetch tool to retrieve content
+- **Every article must include a URL link — no link-less entries**
+- **Hatena Bookmark: always extract the original article URL**, not the Hatena entry page URL
+- **Hacker News: use the HN comment page URL (`item?id=` format)**, not the original article URL
+- **Reddit: use the full Reddit comment page URL (`https://www.reddit.com/r/subreddit/comments/...`)**
+- **All titles must be in English**
+- Be mindful of Reddit API rate limits (approximately 60 requests per minute)
+- Prioritize articles with high upvotes / comment counts / bookmark counts
+- Use the actual execution date for YYYYMMDD in the output filename
