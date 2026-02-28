@@ -5,8 +5,8 @@ description: "Daily tech trend collection customized for mkontani"
 
 # Daily Trend Collection
 
-Collect trending articles from Hatena Bookmark IT, Hacker News, Reddit, and security
-blogs, then save results to `content/posts/daily/YYYYMMDD-trend.md`.
+Collect trending articles from Hatena Bookmark IT, Hacker News, Reddit, and Feedly
+OPML subscriptions, then save results to `content/posts/daily/YYYYMMDD-trend.md`.
 
 ## CRITICAL: Token Budget Strategy
 
@@ -32,7 +32,7 @@ Read `mkontani-interests.md` to understand mkontani's technical interest areas.
 
 ### 1. Collect trend data (use Task tool subagents)
 
-Launch **three Task-tool subagents in parallel** for the three source groups below.
+Launch **four Task-tool subagents in parallel** for the four source groups below.
 Each subagent must return **only a compact structured text list** — never raw HTML.
 
 ---
@@ -169,16 +169,91 @@ Prompt the subagent with:
 
 ---
 
-#### Security blogs (inline — small payload)
+#### Subagent D: Feedly OPML subscriptions
 
-After the three subagents return, optionally check these security blogs:
+Prompt the subagent with:
 
-- https://www.aikido.dev/blog
-- https://www.wiz.io/blog
-
-Use WebFetch with `format: text` and extract only the latest 1-3 article titles
-and URLs. Include any with interest rating three-star in notable topics. If this would
-add too much context, skip these sources.
+> Fetch recent articles from RSS feeds listed in the Feedly OPML file.
+>
+> **CRITICAL — Token budget rules:**
+>
+> - There are ~44 feeds in the OPML. Many will return errors or be slow.
+>   Set a **5-second curl timeout** per feed (`--max-time 5`).
+> - Extract at most **3 items per feed** (the latest 3).
+> - Return at most **5 items per category** (keep only the most recent).
+> - Total output must not exceed **120 lines**. If it does, truncate the
+>   lowest-priority categories first (Hacker > News > Devops).
+> - Never return raw XML/HTML. Return only the structured list below.
+>
+> **Step 1 — Parse the OPML file**
+>
+> Read the file `feedly-opml-a7e028cf-ff56-443f-b8f7-1dbf2b6d8390.opml`
+> in the repository root. Extract the `xmlUrl` and `title` for every
+> `<outline type="rss" ...>` element, grouped by parent category
+> (Devops, Hacker, News).
+>
+> **Step 2 — Fetch feeds with a single bash script**
+>
+> Write and execute a bash script that:
+>
+> 1. Loops through each feed URL.
+> 2. Fetches with `curl -s --max-time 5`.
+> 3. Pipes through `python3` (or `grep`/`sed` fallback) to extract the
+>    latest 3 `<item>` or `<entry>` elements, outputting title, link, and
+>    publication date.
+> 4. Sleeps 0.5 s between requests to be polite.
+> 5. Skips feeds that return errors or empty results silently.
+>
+> Recommended python3 one-liner for each feed:
+>
+> ```bash
+> curl -s --max-time 5 "$url" | python3 -c "
+> import sys, xml.etree.ElementTree as ET
+> try:
+>     tree = ET.parse(sys.stdin)
+>     root = tree.getroot()
+>     ns = {'atom':'http://www.w3.org/2005/Atom'}
+>     items = root.findall('.//item')[:3] or root.findall('.//atom:entry', ns)[:3]
+>     for it in items:
+>         title = it.findtext('title') or it.findtext('atom:title', namespaces=ns) or 'N/A'
+>         link = it.findtext('link') or ''
+>         if not link:
+>             le = it.find('atom:link', ns)
+>             link = le.get('href','') if le is not None else ''
+>         date = it.findtext('pubDate') or it.findtext('dc:date') or it.findtext('atom:updated', namespaces=ns) or ''
+>         print(f'- [{title}]({link}) ({date})')
+> except Exception:
+>     pass
+> "
+> ```
+>
+> **Step 3 — Format output**
+>
+> Return ONLY a categorized list in this exact format — nothing else:
+>
+> ```
+> ### Devops
+> Kubernetes Blog:
+> - [Title](URL) (date)
+> Google Online Security Blog:
+> - [Title](URL) (date)
+> ...
+>
+> ### Hacker
+> DevelopersIO:
+> - [Title](URL) (date)
+> ...
+>
+> ### News
+> Publickey:
+> - [Title](URL) (date)
+> Krebs on Security:
+> - [Title](URL) (date)
+> ...
+> ```
+>
+> Maximum 5 items per category (15 total across 3 categories).
+> No commentary, no raw XML, no HTML.
 
 ---
 
@@ -219,6 +294,18 @@ Analyze the collected structured data from the following angles:
 - Crypto: cryptocurrency, blockchain, DeFi
 - Prioritize by upvote count and comment count (community signal)
 - Favor actively debated topics (high comment count)
+
+**Feedly OPML subscriptions**
+
+- Devops: Kubernetes, CNCF, Docker, Istio, HashiCorp, security (Google, Flatt,
+  LAC, Tokumaru, smallstep, Datadog) — infrastructure and security updates
+- Hacker (JP engineering blogs): DevelopersIO, Mercari, LINE/LY Corp, DeNA,
+  CyberAgent, Cookpad, Hatena, Cybozu, Darknet — JP engineering culture and
+  security research
+- News: Publickey, GIGAZINE, TechCrunch Japan, Krebs on Security, piyolog,
+  FIDO Alliance, DigiCert — breaking tech/security news
+- Cross-reference with interest areas: security disclosures, auth/FIDO updates,
+  and JP engineering blog posts are highest priority
 
 ### 3. Output
 
@@ -290,17 +377,45 @@ Use the following format:
 
 1. [Title](Reddit comment page URL) (XXX ups, XXX comments) — r/CryptoCurrency — summary
 2. ...
+
+## Feedly OPML Subscriptions
+
+### Notable Topics
+
+| Title                | Interest | Category             | Source    | Notes                              |
+| -------------------- | -------- | -------------------- | --------- | ---------------------------------- |
+| [Title](article URL) | ★★★/★★/★ | Security/DevOps/etc. | Feed name | Points useful for content creation |
+
+### Entries by Category
+
+#### Devops
+
+1. [Title](URL) — Source feed name — summary
+2. ...
+
+#### Hacker (JP Engineering Blogs)
+
+1. [Title](URL) — Source feed name — summary
+2. ...
+
+#### News
+
+1. [Title](URL) — Source feed name — summary
+2. ...
 ```
 
 ## Notes
 
 - **Use Task tool subagents for all data collection** to keep raw content out of main context
-- Use Bash + curl + jq instead of WebFetch for structured APIs (HN, Reddit)
+- Use Bash + curl + jq instead of WebFetch for structured APIs (HN, Reddit, RSS feeds)
+- **Feedly OPML feeds: 5-second timeout per feed, max 3 items per feed, max 5 items per category (15 total)**
 - **Every article must include a URL link — no link-less entries**
 - **Hatena Bookmark: always extract the original article URL**, not the Hatena entry page URL
 - **Hacker News: use the HN comment page URL (`item?id=` format)**, not the original article URL
 - **Reddit: use the full Reddit comment page URL (`https://www.reddit.com/r/subreddit/comments/...`)**
-- **All titles must be in English** (translate Japanese titles)
+- **All hyperlinks must open in a new tab (`_blank`)**
+- For Markdown output, render links using HTML anchors to enforce this: `<a href="URL" target="_blank" rel="noopener noreferrer">Title</a>`
+- **All titles can remain in their original language** (no translation required)
 - Be mindful of Reddit API rate limits (approximately 60 requests per minute)
 - Prioritize articles with high upvotes / comment counts / bookmark counts
 - Use the actual execution date for YYYYMMDD in the output filename
