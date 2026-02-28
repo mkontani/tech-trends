@@ -1,6 +1,6 @@
 baseURL = "https://mkontani.github.io/tech-trends/"
 languageCode = "en"
-title = "tech-trends"
+title = "tech-trends for mkontani"
 paginate = 20
 
 [module]
@@ -18,27 +18,27 @@ paginate = 20
   defaultTheme = "auto"
 
 [params.homeInfoParams]
-  Title = "tech-trends"
+  Title = "Tech Trends"
   Content = "mkontani's daily curated tech trends and articles"
 
 [[params.socialIcons]]
   name = "github"
   url = "https://github.com/mkontani"
 
-[menu]
-  [[menu.main]]
-    identifier = "posts"
-    name = "Posts"
-    url = "/posts/"
-    weight = 10
-  [[menu.main]]
-    identifier = "tags"
-    name = "Tags"
-    url = "/tags/"
-    weight = 20
+# [menu]
+#   [[menu.main]]
+#     identifier = "posts"
+#     name = "Posts"
+#     url = "/posts/"
+#     weight = 10
+#   [[menu.main]]
+#     identifier = "tags"
+#     name = "Tags"
+#     url = "/tags/"
+#     weight = 20
 
-[taxonomies]
-  tag = "tags"
+# [taxonomies]
+#   tag = "tags"
 
 [markup.highlight]
   style = "monokai"

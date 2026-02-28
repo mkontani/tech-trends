@@ -106,7 +106,7 @@ Analyze collected content from the following angles:
   - AI (dev tools, security, ethics)
   - Security (vulnerabilities, attack techniques, defenses)
   - OSS / indie dev (success stories, marketing, monetization)
-  - Career (foreign-company hiring, remote work, side projects)
+  - Crypto / Blockchain / DeFi (EVM, Solana, Sui, stablecoins, protocols)
   - JavaScript / TypeScript (new tech, tools, frameworks)
 
 **Hatena Bookmark IT**
@@ -114,7 +114,7 @@ Analyze collected content from the following angles:
 - Topics resonating with Japanese engineers
 - Potentially controversial topics
 - Tech trends (AI, dev practices, tooling)
-- Career and work-style topics
+- Crypto / Blockchain / DeFi (EVM, Solana, Sui, stablecoins, DeFi protocols)
 
 **Hacker News**
 
@@ -147,11 +147,11 @@ Use the following format:
 
 | Title                         | Bookmarks | Interest | Category           | Notes                              |
 | ----------------------------- | --------- | -------- | ------------------ | ---------------------------------- |
-| [Title](original article URL) | XXX users | ★★★/★★/★ | AI/Dev/Career/etc. | Points useful for content creation |
+| [Title](original article URL) | XXX users | ★★★/★★/★ | AI/Dev/Crypto/etc. | Points useful for content creation |
 
 **Interest rating definition**:
 
-- ★★★: Directly related to interest areas (AI x security, OSS, indie dev, career, etc.)
+- ★★★: Directly related to interest areas (AI x security, OSS, indie dev, crypto/blockchain/DeFi, etc.)
 - ★★: Indirectly related (general tech trends, engineering culture)
 - ★: General IT/tech news
 
