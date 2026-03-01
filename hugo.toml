@@ -2,6 +2,10 @@ baseURL = "https://mkontani.github.io/tech-trends/"
 languageCode = "en"
 title = "tech-trends for mkontani"
 paginate = 20
+buildFuture = true
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
 
 [module]
   [[module.imports]]
@@ -25,17 +29,12 @@ paginate = 20
   name = "github"
   url = "https://github.com/mkontani"
 
-# [menu]
-#   [[menu.main]]
-#     identifier = "posts"
-#     name = "Posts"
-#     url = "/posts/"
-#     weight = 10
-#   [[menu.main]]
-#     identifier = "tags"
-#     name = "Tags"
-#     url = "/tags/"
-#     weight = 20
+[menu]
+  [[menu.main]]
+    identifier = "search"
+    name = "Search"
+    url = "/search/"
+    weight = 10
 
 # [taxonomies]
 #   tag = "tags"

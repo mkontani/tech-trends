@@ -338,6 +338,18 @@ Analyze the collected structured data from the following angles:
 Use the following format:
 
 ```markdown
+---
+title: "Trend Report: YYYY-MM-DD"
+date: YYYY-MM-DD
+lastmod: YYYY-MM-DD
+draft: false
+description: "Daily tech trend curation from Hatena Bookmark IT, Hacker News, Reddit, and Feedly for YYYY-MM-DD."
+tags:
+  - ai
+  - security
+  - devtools
+---
+
 # Trend Report: YYYY-MM-DD
 
 ## Hatena Bookmark IT (Japanese market)
