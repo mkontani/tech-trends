@@ -271,7 +271,7 @@ reports. This prevents the same trending topic from surfacing day after day.
    slashes, query parameters, and fragments) that matches a known URL is
    marked as a **duplicate**.
 4. **Apply during analysis.** In Step 2 (Analyze):
-   - **Exclude duplicates from Notable Topics tables entirely.** They must not
+   - **Exclude duplicates from Notable Topics lists entirely.** They must not
      appear in any Notable Topics section.
    - **Mark duplicates in All Entries / Entries by Category lists** by
      appending `[dup]` after the summary. Keep them in the list for
@@ -344,9 +344,13 @@ Use the following format:
 
 ### Notable Topics
 
-| Title                         | Bookmarks | Interest | Category           | Notes                              |
-| ----------------------------- | --------- | -------- | ------------------ | ---------------------------------- |
-| [Title](original article URL) | XXX users | ★★★/★★/★ | AI/Dev/Crypto/etc. | Points useful for content creation |
+- **[Title](original article URL)**
+  XXX users | ★★★/★★/★ | AI/Dev/Crypto/etc.
+  Points useful for content creation
+
+- **[Title](original article URL)**
+  XXX users | ★★/★ | Category
+  Notes
 
 **Interest rating definition**:
 
@@ -363,9 +367,13 @@ Use the following format:
 
 ### Notable Topics
 
-| Title                        | Points | Interest | Category             | Notes                              |
-| ---------------------------- | ------ | -------- | -------------------- | ---------------------------------- |
-| [Title](HN comment page URL) | XXXpt  | ★★★/★★/★ | AI/Security/Dev/etc. | Points useful for content creation |
+- **[Title](HN comment page URL)**
+  XXXpt | ★★★/★★/★ | AI/Security/Dev/etc.
+  Points useful for content creation
+
+- **[Title](HN comment page URL)**
+  XXXpt | ★★/★ | Category
+  Notes
 
 ### All Entries
 
@@ -376,9 +384,13 @@ Use the following format:
 
 ### Notable Topics
 
-| Title                                 | Upvotes | Comments | Interest | Category             | Subreddit   | Notes                              |
-| ------------------------------------- | ------- | -------- | -------- | -------------------- | ----------- | ---------------------------------- |
-| [Title](full Reddit comment page URL) | XXX ups | XXX      | ★★★/★★/★ | Security/AI/OSS/etc. | r/subreddit | Points useful for content creation |
+- **[Title](full Reddit comment page URL)**
+  XXX ups | XXX comments | ★★★/★★/★ | Security/AI/OSS/etc. | r/subreddit
+  Points useful for content creation
+
+- **[Title](full Reddit comment page URL)**
+  XXX ups | XXX comments | ★★/★ | Category | r/subreddit
+  Notes
 
 ### Entries by Category
 
@@ -406,9 +418,13 @@ Use the following format:
 
 ### Notable Topics
 
-| Title                | Interest | Category             | Source    | Notes                              |
-| -------------------- | -------- | -------------------- | --------- | ---------------------------------- |
-| [Title](article URL) | ★★★/★★/★ | Security/DevOps/etc. | Feed name | Points useful for content creation |
+- **[Title](article URL)**
+  ★★★/★★/★ | Security/DevOps/etc. | Feed name
+  Points useful for content creation
+
+- **[Title](article URL)**
+  ★★/★ | Category | Feed name
+  Notes
 
 ### Entries by Category
 
@@ -438,8 +454,6 @@ Use the following format:
 - **Hatena Bookmark: always extract the original article URL**, not the Hatena entry page URL
 - **Hacker News: use the HN comment page URL (`item?id=` format)**, not the original article URL
 - **Reddit: use the full Reddit comment page URL (`https://www.reddit.com/r/subreddit/comments/...`)**
-- **All hyperlinks must open in a new tab (`_blank`)**
-- For Markdown output, render links using HTML anchors to enforce this: `<a href="URL" target="_blank" rel="noopener noreferrer">Title</a>`
 - **All titles can remain in their original language** (no translation required)
 - Be mindful of Reddit API rate limits (approximately 60 requests per minute)
 - Prioritize articles with high upvotes / comment counts / bookmark counts
