@@ -19,6 +19,8 @@ buildFuture = true
   ShowPostNavLinks = true
   ShowBreadCrumbs = true
   ShowCodeCopyButtons = true
+  ShowToc = true
+  ShowRssButtonInSectionTermList = true
   defaultTheme = "auto"
 
 [params.homeInfoParams]
@@ -28,6 +30,10 @@ buildFuture = true
 [[params.socialIcons]]
   name = "github"
   url = "https://github.com/mkontani"
+
+[[params.socialIcons]]
+  name = "rss"
+  url = "/tech-trends/index.xml"
 
 [menu]
   [[menu.main]]

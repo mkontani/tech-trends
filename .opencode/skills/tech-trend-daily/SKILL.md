@@ -348,9 +348,8 @@ tags:
   - ai
   - security
   - devtools
+  - crypto
 ---
-
-# Trend Report: YYYY-MM-DD
 
 ## Hatena Bookmark IT (Japanese market)
 
