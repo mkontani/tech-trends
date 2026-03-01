@@ -46,11 +46,15 @@
         </outline>
         <outline text="News" title="News">
             <outline type="rss" text="ギズモード・ジャパン" title="ギズモード・ジャパン" xmlUrl="http://www.gizmodo.jp/index.xml" htmlUrl="https://www.gizmodo.jp"/>
+            <outline type="rss" text="CRYPTO TIMES" title="CRYPTO TIMES" xmlUrl="https://crypto-times.jp/feed/" htmlUrl="https://crypto-times.jp/"/>
             <outline type="rss" text="FIDO Alliance" title="FIDO Alliance" xmlUrl="https://fidoalliance.org/feed/" htmlUrl="https://fidoalliance.org"/>
             <outline type="rss" text="GIGAZINE" title="GIGAZINE" xmlUrl="https://gigazine.net/news/rss_2.0/" htmlUrl="https://gigazine.net/"/>
             <outline type="rss" text="TechCrunch Japan" title="TechCrunch Japan" xmlUrl="http://jp.techcrunch.com/feed/" htmlUrl="https://jp.techcrunch.com"/>
-            <outline type="rss" text="Publickey" title="Publickey" xmlUrl="http://www.publickey1.jp/atom.xml" htmlUrl="https://www.publickey1.jp/"/>
             <outline type="rss" text="Blog" title="Blog" xmlUrl="https://www.digicert.com/feed/" htmlUrl="https://www.digicert.com/blog"/>
+            <outline type="rss" text="仮想通貨・ビットコインのニュースサイト｜コインテレグラフ ジャパン" title="仮想通貨・ビットコインのニュースサイト｜コインテレグラフ ジャパン" xmlUrl="https://jp.cointelegraph.com/rss" htmlUrl="https://jp.cointelegraph.com"/>
+            <outline type="rss" text="CoinPost｜仮想通貨ビットコインニュース・投資情報" title="CoinPost｜仮想通貨ビットコインニュース・投資情報" xmlUrl="http://coinpost.jp/?feed=rss2" htmlUrl="https://coinpost.jp"/>
+            <outline type="rss" text="あたらしい経済" title="あたらしい経済" xmlUrl="https://www.neweconomy.jp/feed" htmlUrl="https://www.neweconomy.jp"/>
+            <outline type="rss" text="Publickey" title="Publickey" xmlUrl="http://www.publickey1.jp/atom.xml" htmlUrl="https://www.publickey1.jp/"/>
             <outline type="rss" text="piyolog" title="piyolog" xmlUrl="http://d.hatena.ne.jp/Kango/rss" htmlUrl="https://piyolog.hatenadiary.jp/"/>
             <outline type="rss" text="サイバーセキュリティ・情報漏洩ニュース – サイバーセキュリティ.com" title="サイバーセキュリティ・情報漏洩ニュース – サイバーセキュリティ.com" xmlUrl="https://cybersecurity-jp.com/news/feed" htmlUrl="https://cybersecurity-jp.com"/>
             <outline type="rss" text="Krebs on Security" title="Krebs on Security" xmlUrl="http://krebsonsecurity.com/feed/" htmlUrl="https://krebsonsecurity.com"/>
