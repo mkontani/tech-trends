@@ -6,7 +6,7 @@
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function () {
       navigator.serviceWorker.register('{{ "sw.js" | absURL }}', {
-        scope: '{{ site.BaseURL }}'
+        scope: '/tech-trends/'
       }).catch(function (err) {
         console.warn('ServiceWorker registration failed:', err);
       });
