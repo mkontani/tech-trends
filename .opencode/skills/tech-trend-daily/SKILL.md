@@ -259,20 +259,29 @@ Prompt the subagent with:
 
 ### 1.5. Deduplicate against recent reports
 
-Before analysis, check for articles that already appeared in previous daily
-reports. This prevents the same trending topic from surfacing day after day.
+Before analysis, check for articles that already appeared in **Notable Topics**
+of previous daily reports. This prevents the same highlighted topic from
+surfacing in Notable Topics day after day.
 
 1. **Read recent reports.** Use the Glob tool to find files matching
    `content/posts/daily/*-trend.md`. From the results, select the most recent
    **3 files** (excluding today's date). Read each file.
-2. **Extract all URLs.** From each file, collect every URL that appears inside
-   a Markdown link `[...](URL)`. Build a set of **known URLs**.
-3. **Build an exclusion list.** Any article URL (after stripping trailing
-   slashes, query parameters, and fragments) that matches a known URL is
-   marked as a **duplicate**.
+2. **Extract Notable Topics URLs only.** From each file, collect every URL that
+   appears inside a Markdown link `[...](URL)` **within a `### Notable Topics`
+   section** (i.e. between a `### Notable Topics` heading and the next `###`
+   or `##` heading). Build a set of **known Notable URLs**.
+3. **Build an exclusion list.** Normalize each URL before comparison:
+   - For HN URLs (`news.ycombinator.com/item?id=...`): strip only the fragment
+     (`#...`), **keep the `?id=` query parameter** — it is the article identifier.
+   - For all other URLs: strip trailing slash, query parameters (`?...`),
+     and fragments (`#...`).
+   Any article URL whose normalized form matches a known Notable URL is marked
+   as a **duplicate**.
 4. **Apply during analysis.** In Step 2 (Analyze):
-   - **Exclude duplicates from Notable Topics lists entirely.** They must not
-     appear in any Notable Topics section.
+   - **HARD RULE: Any URL on the exclusion list MUST NOT appear in any
+     Notable Topics section, regardless of how high its score is today.**
+     There are no exceptions. Do not add `[dup]` and include it anyway —
+     omit it from Notable Topics entirely.
    - **Mark duplicates in All Entries / Entries by Category lists** by
      appending `[dup]` after the summary. Keep them in the list for
      completeness but move them to the bottom of their section.
@@ -457,7 +466,7 @@ tags:
 
 ## Notes
 
-- **Deduplication: articles that appeared in the last 3 daily reports are excluded from Notable Topics and marked `[dup]` in All Entries.** URL matching is normalized (strip trailing `/`, query params, fragments) before comparison.
+- **Deduplication: articles that appeared in any Notable Topics section of the last 3 daily reports are excluded from Notable Topics and marked `[dup]` in All Entries.** Only Notable Topics URLs are checked — All Entries / Entries by Category URLs are not used for exclusion. URL matching is normalized (strip trailing `/`, query params, fragments) before comparison.
 - **Use Task tool subagents for all data collection** to keep raw content out of main context
 - Use Bash + curl + jq instead of WebFetch for structured APIs (HN, Reddit, RSS feeds)
 - **Feedly OPML feeds: 5-second timeout per feed, max 3 items per feed, max 5 items per category (15 total)**
