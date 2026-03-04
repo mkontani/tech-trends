@@ -1,0 +1,15 @@
+{{- /* PWA: Web App Manifest */}}
+<link rel="manifest" href="{{ "manifest.json" | absURL }}">
+
+{{- /* PWA: Service Worker registration */}}
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('{{ "sw.js" | absURL }}', {
+        scope: '{{ site.BaseURL }}'
+      }).catch(function (err) {
+        console.warn('ServiceWorker registration failed:', err);
+      });
+    });
+  }
+</script>
