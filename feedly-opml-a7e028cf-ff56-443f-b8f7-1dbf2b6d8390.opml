@@ -32,7 +32,6 @@
             <outline type="rss" text="Blog – LINE ENGINEERING" title="Blog – LINE ENGINEERING" xmlUrl="http://tech.naver.jp/blog/?feed=rss2" htmlUrl="https://engineering.linecorp.com/en/"/>
             <outline type="rss" text="Hatena Developer Blog" title="Hatena Developer Blog" xmlUrl="http://d.hatena.ne.jp/hatenatech/rss" htmlUrl="https://developer.hatenastaff.com/"/>
             <outline type="rss" text="さくらのナレッジ" title="さくらのナレッジ" xmlUrl="http://knowledge.sakura.ad.jp/feed/" htmlUrl="https://knowledge.sakura.ad.jp"/>
-            <outline type="rss" text="NicoNico Pun" title="NicoNico Pun" xmlUrl="https://blog.nicopun.com/index.xml" htmlUrl="https://blog.nicopun.com/"/>
             <outline type="rss" text="LINEヤフー Tech Blog (LY Corporation Tech Blog" title="LINEヤフー Tech Blog (LY Corporation Tech Blog" xmlUrl="http://techblog.yahoo.co.jp/atom.xml" htmlUrl="https://techblog.lycorp.co.jp"/>
             <outline type="rss" text="ぼちぼち日記" title="ぼちぼち日記" xmlUrl="http://d.hatena.ne.jp/jovi0608/rss" htmlUrl="https://jovi0608.hatenablog.com/"/>
             <outline type="rss" text="Insider Archives - Microsoft Edge Blog" title="Insider Archives - Microsoft Edge Blog" xmlUrl="https://blogs.windows.com/msedgedev/tag/insider/feed/" htmlUrl="https://blogs.windows.com/msedgedev/tag/insider/"/>
