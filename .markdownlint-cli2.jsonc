@@ -1,0 +1,14 @@
+{
+  // markdownlint-cli2 configuration for tech-trends
+  "config": {
+    // MD013: Line length — disabled because daily report entries intentionally
+    // contain long lines (URLs + summaries) that cannot be wrapped without
+    // breaking the list item format.
+    "MD013": false,
+
+    // MD024: No duplicate headings — disabled because the daily report template
+    // repeats section headings (e.g. "Notable Topics", "All Entries") under
+    // each H2 data-source section by design.
+    "MD024": false
+  }
+}
